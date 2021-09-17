@@ -27,7 +27,26 @@ namespace PM.config
             }
             else
             {
-                return dictionarys[section];
+                if (dictionarys.ContainsKey(section))
+                {
+                    return dictionarys[section];
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        }
+
+        public static void removeProjectBySection(String section)
+        {
+            if (null != dictionarys)
+            {
+                if (dictionarys.ContainsKey(section))
+                {
+                    dictionarys.Remove(section);
+                }
             }
         }
         /// <summary>

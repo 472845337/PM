@@ -172,6 +172,13 @@ namespace PM
             updateItem.Tag = buttonName;
             updateItem.Click += new EventHandler(BtnRightUpdateClick);
             rightMenu.Items.Add(updateItem);
+            /* 编辑程信息按钮 */
+            ToolStripMenuItem deleteItem = new ToolStripMenuItem();
+            deleteItem.Name = buttonName + "MouseRightMenu_Delete";
+            deleteItem.Text = "删除";
+            deleteItem.Tag = buttonName;
+            deleteItem.Click += new EventHandler(BtnRightDeleteClick);
+            rightMenu.Items.Add(deleteItem);
             /* 装载右键 */
             button.ContextMenuStrip = rightMenu;
             Projects_Panel.Controls.Add(button);
@@ -195,16 +202,19 @@ namespace PM
             }
             // 识别运行状态
             ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
-            if (PortUtils.PortInUse(Convert.ToInt16(port)))
+            if (null != projectSection)
             {
-                projectSection.isRunning = true;
-                            }
-            else
-            {
-                projectSection.isRunning = false;
+                if (PortUtils.PortInUse(Convert.ToInt16(port)))
+                {
+                    projectSection.isRunning = true;
+                }
+                else
+                {
+                    projectSection.isRunning = false;
+                }
+                // 根据运行状态右键按钮的可操作性调整
+                updateButtonEnabledOfMenuStrip(section, projectSection.isRunning);
             }
-            // 根据运行状态右键按钮的可操作性调整
-            updateButtonEnabledOfMenuStrip(section, projectSection.isRunning);
         }
 
         /// <summary>
@@ -242,9 +252,22 @@ namespace PM
         {
             Button btn = (Button)Projects_Panel.Controls[section];
             ProjectSections.ProjectSection monitorSection = ProjectSections.getProjectBySection(section);
-            String title = monitorSection.title;
-            String port = monitorSection.port;
-            btn.Text = title;
+            if (null != monitorSection)
+            {
+                String title = monitorSection.title;
+                String port = monitorSection.port;
+                btn.Text = title;
+            }
+            else
+            {
+
+            }
+        }
+
+        public void removeButton(String section)
+        {
+            Button btn = (Button)Projects_Panel.Controls[section];
+            Projects_Panel.Controls.Remove(btn);
         }
         // 鼠标移动到按钮事件
         ToolTip toolTip1 = new ToolTip();
@@ -253,15 +276,18 @@ namespace PM
             Button currentBtn = (Button)sender;
             String section = currentBtn.Name;
             ProjectSections.ProjectSection monitorSection = ProjectSections.getProjectBySection(section);
-            String title = monitorSection.title;
+            if (null != monitorSection)
+            {
+                String title = monitorSection.title;
 
-            // 设置显示样式
-            //toolTip1.AutoPopDelay = 5000;//提示信息的可见时间
-            toolTip1.InitialDelay = 200;//事件触发多久后出现提示
-            toolTip1.ReshowDelay = 0;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
-            toolTip1.ShowAlways = true;//是否显示提示框
-            //  设置伴随的对象.
-            toolTip1.SetToolTip(currentBtn, title);
+                // 设置显示样式
+                //toolTip1.AutoPopDelay = 5000;//提示信息的可见时间
+                toolTip1.InitialDelay = 200;//事件触发多久后出现提示
+                toolTip1.ReshowDelay = 0;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
+                toolTip1.ShowAlways = true;//是否显示提示框
+                                           //  设置伴随的对象.
+                toolTip1.SetToolTip(currentBtn, title);
+            }
         }
         /**
       * 右键启动
@@ -272,11 +298,14 @@ namespace PM
             String section = (String)menuItem.Tag;
             // 按钮置为灰，避免重复点击
             menuItem.Enabled = false;
-            ProjectSections.ProjectSection monitorSection = ProjectSections.getProjectBySection(section);
-            String jdkPath = JDKPath_TextBox.Text;
-            String profile = Profile_ComboBox.SelectedItem.ToString();
-            String logPath = monitorSection.jar.Substring(0, monitorSection.jar.LastIndexOf("."));
-            ProjectUtils.projectStart(jdkPath, monitorSection.jar, profile, logPath, "info.log", "error.log");
+            ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
+            if (null != projectSection)
+            {
+                String jdkPath = JDKPath_TextBox.Text;
+                String profile = Profile_ComboBox.SelectedItem.ToString();
+                String logPath = Path.GetDirectoryName(projectSection.jar) + "/"+ projectSection.title;
+                ProjectUtils.projectStart(jdkPath, projectSection.jar, profile, logPath, "info.log", "error.log");
+            }
         }
         /**
          * 右键停止
@@ -287,8 +316,11 @@ namespace PM
             menuItem.Enabled = false;
             String section = (String)menuItem.Tag;
             ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
-            // 停止
-            ProjectUtils.projectStop(projectSection.title, Convert.ToInt16(projectSection.port));
+            if (null != projectSection)
+            {
+                // 停止
+                ProjectUtils.projectStop(projectSection.title, Convert.ToInt16(projectSection.port));
+            }
         }
 
         /**
@@ -301,6 +333,21 @@ namespace PM
             updateForm.mainForm = this;
             updateForm.section = (String)menuItem.Tag;
             updateForm.ShowDialog();
+        }
+
+        private void BtnRightDeleteClick(Object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            menuItem.Enabled = false;
+            String section = (String)menuItem.Tag;
+            // 移除缓存中的项目信息
+            ProjectSections.removeProjectBySection(section);
+            // 移除panel中的按钮
+            removeButton(section);
+            // 删除ini文件中的配置信息
+            iniUtils.EraseSection(Config.ProjectsIniPath, section);
+
+            MessageBox.Show("删除成功！");
         }
 
         private void setButtonBackColor(Button button, Color color)
@@ -359,17 +406,20 @@ namespace PM
             foreach (String section in ProjectSections.getAllSections())
             {
                 ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
-                String heartBeatUrl = projectSection.heartBeat;
-                String result = HttpUtils.postRequest(heartBeatUrl, null, null);
-                if ("success".Equals(result))
+                if (null != projectSection)
                 {
-                    // 运行中
-                    updateButtonEnabledOfMenuStrip(section, true);
-                }
-                else
-                {
-                    // 未运行
-                    updateButtonEnabledOfMenuStrip(section, false);
+                    String heartBeatUrl = projectSection.heartBeat;
+                    String result = HttpUtils.postRequest(heartBeatUrl, null, null);
+                    if ("success".Equals(result))
+                    {
+                        // 运行中
+                        updateButtonEnabledOfMenuStrip(section, true);
+                    }
+                    else
+                    {
+                        // 未运行
+                        updateButtonEnabledOfMenuStrip(section, false);
+                    }
                 }
             }
         }
