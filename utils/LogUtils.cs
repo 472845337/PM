@@ -28,9 +28,15 @@ namespace PM.utils
             StreamWriter sw = null;
             try
             {
-                if (File.Exists(logFile))
-                //验证文件是否存在，有则追加，无则创建
+                String logFileDirectory = Path.GetDirectoryName(logFile);
+                if (!FileUtils.Boo_DirExit(logFileDirectory))
                 {
+                    // 目录不存在，创建目录
+                    FileUtils.DirCreate(logFileDirectory);
+                }
+                // 验证文件是否存在，有则追加，无则创建
+                if (File.Exists(logFile))
+                                {
                     fs = new FileStream(@logFile, FileMode.Append, FileAccess.Write);
                 }
                 else
