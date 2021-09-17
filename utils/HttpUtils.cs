@@ -44,7 +44,7 @@ namespace PM.utils
             }
             catch (Exception e)
             {
-                // LogUtils.writeLog(e.Message);
+                LogUtils.writeLog(e.Message);
             }
             finally
             {
