@@ -101,7 +101,7 @@ namespace PM
                 /* StartForm中更新服务按钮 *************/
                 mainForm.updateButton(section);
                 /* 更新服务按钮完成****** *************/
-                // 关闭新增窗口
+                // 关闭修改窗口
                 UpdateForm_Cancel_Button_Click(sender, e);
             }
         }

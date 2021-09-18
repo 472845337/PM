@@ -14,12 +14,14 @@ namespace PM
         /** 强制GC API函数**/
         [System.Runtime.InteropServices.DllImport("kernel32")]
         public static extern Int32 SetProcessWorkingSetSize(IntPtr process, Int32 minSize, Int32 maxSize);
+        // 配置文件操作工具
         IniUtils iniUtils = new IniUtils();
         // 不能使用窗体中的timer控件，要使用线程timer
         System.Timers.Timer GcTimer = new System.Timers.Timer();
         System.Timers.Timer MonitorTimer = new System.Timers.Timer();
         public MainForm()
         {
+            /// 支持线程操作控件
             CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             
@@ -56,9 +58,13 @@ namespace PM
             Thread.Sleep(200);
             // 计时器频率
             String intervalStr = iniUtils.IniReadValue(Config.SystemIniPath, "system", "interval");
+            waitForm.freshProgress(progress += 5);
+            Thread.Sleep(200);
             // 请求超时时间
             String timeoutStr = iniUtils.IniReadValue(Config.SystemIniPath, "system", "timeout");
-            if(null == intervalStr || "".Equals(intervalStr))
+            waitForm.freshProgress(progress += 5);
+            Thread.Sleep(200);
+            if (null == intervalStr || "".Equals(intervalStr))
             {
                 intervalStr = "5000";
                 iniUtils.IniWriteValue(Config.SystemIniPath, "system", "interval", "5000");
@@ -334,7 +340,11 @@ namespace PM
             updateForm.section = (String)menuItem.Tag;
             updateForm.ShowDialog();
         }
-
+        /// <summary>
+        /// 右键删除按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnRightDeleteClick(Object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
@@ -350,11 +360,11 @@ namespace PM
             MessageBox.Show("删除成功！");
         }
 
-        private void setButtonBackColor(Button button, Color color)
-        {
-            button.BackColor = color;
-        }
-
+        /// <summary>
+        /// 添加窗口弹出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProjectAdd_Button_Click(object sender, EventArgs e)
         {
             AddForm addForm = new AddForm();
@@ -363,6 +373,11 @@ namespace PM
             addForm.ShowDialog();
         }
 
+        /// <summary>
+        /// 选择JDK路径的文件夹选择框
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void JDKPath_Dialog_Button_Click(object sender, EventArgs e)
         {
             JDKPath_FolderBrowserDialog.SelectedPath = Path.GetDirectoryName(JDKPath_TextBox.Text);
@@ -373,6 +388,11 @@ namespace PM
             }
         }
 
+        /// <summary>
+        /// 系统参数保存按钮点击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SystemConfig_Save_Button_Click(object sender, EventArgs e)
         {
             String profile = Profile_ComboBox.Text;
@@ -390,6 +410,11 @@ namespace PM
             
         }
 
+        /// <summary>
+        /// 定时GC任务
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GCTimer_Tick(object sender, EventArgs e)
         {
             GC.Collect();
@@ -403,22 +428,25 @@ namespace PM
 
         private void MonitorTimer_Tick(object sender, EventArgs e)
         {
-            foreach (String section in ProjectSections.getAllSections())
+            if (null != ProjectSections.getAllSections())
             {
-                ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
-                if (null != projectSection)
+                foreach (String section in ProjectSections.getAllSections())
                 {
-                    String heartBeatUrl = projectSection.heartBeat;
-                    String result = HttpUtils.postRequest(heartBeatUrl, null, null);
-                    if ("success".Equals(result))
+                    ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
+                    if (null != projectSection)
                     {
-                        // 运行中
-                        updateButtonEnabledOfMenuStrip(section, true);
-                    }
-                    else
-                    {
-                        // 未运行
-                        updateButtonEnabledOfMenuStrip(section, false);
+                        String heartBeatUrl = projectSection.heartBeat;
+                        String result = HttpUtils.postRequest(heartBeatUrl, null, null);
+                        if ("success".Equals(result))
+                        {
+                            // 运行中
+                            updateButtonEnabledOfMenuStrip(section, true);
+                        }
+                        else
+                        {
+                            // 未运行
+                            updateButtonEnabledOfMenuStrip(section, false);
+                        }
                     }
                 }
             }
