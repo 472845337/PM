@@ -119,28 +119,36 @@ namespace PM
             // 
             // Project_GroupBox
             // 
+            this.Project_GroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.Project_GroupBox.Controls.Add(this.Projects_Panel);
             this.Project_GroupBox.Controls.Add(this.ProjectAdd_Button);
             this.Project_GroupBox.Location = new System.Drawing.Point(13, 107);
+            this.Project_GroupBox.MinimumSize = new System.Drawing.Size(0, 320);
             this.Project_GroupBox.Name = "Project_GroupBox";
-            this.Project_GroupBox.Size = new System.Drawing.Size(630, 330);
+            this.Project_GroupBox.Size = new System.Drawing.Size(630, 320);
             this.Project_GroupBox.TabIndex = 1;
             this.Project_GroupBox.TabStop = false;
             this.Project_GroupBox.Text = "项目";
             // 
             // Projects_Panel
             // 
+            this.Projects_Panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.Projects_Panel.AutoScroll = true;
+            this.Projects_Panel.AutoSize = true;
             this.Projects_Panel.Location = new System.Drawing.Point(7, 23);
             this.Projects_Panel.Name = "Projects_Panel";
-            this.Projects_Panel.Size = new System.Drawing.Size(617, 248);
+            this.Projects_Panel.Size = new System.Drawing.Size(617, 245);
             this.Projects_Panel.TabIndex = 1;
             // 
             // ProjectAdd_Button
             // 
+            this.ProjectAdd_Button.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ProjectAdd_Button.Font = new System.Drawing.Font("Microsoft YaHei UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ProjectAdd_Button.Location = new System.Drawing.Point(6, 277);
+            this.ProjectAdd_Button.Location = new System.Drawing.Point(3, 271);
             this.ProjectAdd_Button.Name = "ProjectAdd_Button";
-            this.ProjectAdd_Button.Size = new System.Drawing.Size(618, 46);
+            this.ProjectAdd_Button.Size = new System.Drawing.Size(624, 46);
             this.ProjectAdd_Button.TabIndex = 0;
             this.ProjectAdd_Button.Text = "+";
             this.ProjectAdd_Button.UseVisualStyleBackColor = true;
@@ -148,8 +156,9 @@ namespace PM
             // 
             // Author_Label
             // 
+            this.Author_Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Author_Label.AutoSize = true;
-            this.Author_Label.Location = new System.Drawing.Point(482, 453);
+            this.Author_Label.Location = new System.Drawing.Point(482, 430);
             this.Author_Label.Name = "Author_Label";
             this.Author_Label.Size = new System.Drawing.Size(161, 17);
             this.Author_Label.TabIndex = 2;
@@ -159,10 +168,12 @@ namespace PM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(655, 485);
+            this.ClientSize = new System.Drawing.Size(654, 461);
             this.Controls.Add(this.Author_Label);
             this.Controls.Add(this.Project_GroupBox);
             this.Controls.Add(this.System_GroupBox);
+            this.MaximumSize = new System.Drawing.Size(670, 1000);
+            this.MinimumSize = new System.Drawing.Size(670, 500);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Java项目管理";
@@ -170,6 +181,7 @@ namespace PM
             this.System_GroupBox.ResumeLayout(false);
             this.System_GroupBox.PerformLayout();
             this.Project_GroupBox.ResumeLayout(false);
+            this.Project_GroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
