@@ -430,6 +430,7 @@ namespace PM
         {
             if (null != ProjectSections.getAllSections())
             {
+                try { 
                 foreach (String section in ProjectSections.getAllSections())
                 {
                     ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
@@ -448,6 +449,10 @@ namespace PM
                             updateButtonEnabledOfMenuStrip(section, false);
                         }
                     }
+                }
+                }catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
         }

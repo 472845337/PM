@@ -133,8 +133,9 @@ namespace PM
             // 
             // Projects_Panel
             // 
-            this.Projects_Panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.Projects_Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Projects_Panel.AutoScroll = true;
             this.Projects_Panel.AutoSize = true;
             this.Projects_Panel.Location = new System.Drawing.Point(7, 23);
