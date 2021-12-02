@@ -310,7 +310,7 @@ namespace PM
                 String jdkPath = JDKPath_TextBox.Text;
                 String profile = Profile_ComboBox.SelectedItem.ToString();
                 String logPath = Path.GetDirectoryName(projectSection.jar) + "/"+ projectSection.title;
-                ProjectUtils.projectStart(jdkPath, projectSection.jar, profile, logPath, "info.log", "error.log");
+                ProjectUtils.projectStart(jdkPath, projectSection.jar, profile, int.Parse(projectSection.port), logPath, "info.log", "error.log");
             }
         }
         /**

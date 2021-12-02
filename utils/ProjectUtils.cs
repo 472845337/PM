@@ -11,7 +11,7 @@ namespace PM.utils
         /** 项目启动
          * 
          * */
-        public static void projectStart(String jdkPath, String ProjectPath, String Profile, String LogFilePath, String LogFileName, String ErrorLogFileName)
+        public static void projectStart(String jdkPath, String ProjectPath, String Profile, int port, String LogFilePath, String LogFileName, String ErrorLogFileName)
         {
             Boolean DirIsExist = FileUtils.Boo_DirExit(LogFilePath);
             if (!DirIsExist)
@@ -25,7 +25,7 @@ namespace PM.utils
             {
                 Java = new StringBuilder("\"").Append(jdkPath).Append("\\bin\\java.exe\"");
             }
-            String runScript = Java.Append(" -jar ").Append(ProjectPath).Append(" --spring.profiles.active=").Append(Profile).Append(" > ").Append(LogFilePath).Append(LogFileName).Append(" 2>").Append(LogFilePath).Append(ErrorLogFileName).Append(" &").ToString();
+            String runScript = Java.Append(" -jar ").Append(ProjectPath).Append(" --spring.profiles.active=").Append(Profile).Append(" --server.port=").Append(port).Append(" > ").Append(LogFilePath).Append(LogFileName).Append(" 2>").Append(LogFilePath).Append(ErrorLogFileName).Append(" &").ToString();
             String[] runScriptArray = new string[] { "C:", runScript };
             ProcessUtils processUtils = new ProcessUtils(runScriptArray);
             Thread thread = new Thread(processUtils.runScript);
