@@ -1,11 +1,6 @@
-﻿using PM;
-using PM.config;
+﻿using PM.config;
 using PM.utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -103,6 +98,16 @@ namespace PM
                 /* 更新服务按钮完成****** *************/
                 // 关闭修改窗口
                 UpdateForm_Cancel_Button_Click(sender, e);
+            }
+        }
+
+
+        private void UpdateForm_Jar_Dialog_Button_Click(object sender, EventArgs e)
+        {
+            Jar_UpdateOpenFileDialog.InitialDirectory = UpdateForm_Jar_TextBox.Text;
+            if (Jar_UpdateOpenFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                UpdateForm_Jar_TextBox.Text = Jar_UpdateOpenFileDialog.FileName;
             }
         }
     }

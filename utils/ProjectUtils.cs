@@ -13,13 +13,13 @@ namespace PM.utils
          * */
         public static void projectStart(String jdkPath, String ProjectPath, String Profile, int port, String LogFilePath, String LogFileName, String ErrorLogFileName)
         {
-            Boolean DirIsExist = FileUtils.Boo_DirExit(LogFilePath);
+            Boolean DirIsExist = FileUtils.Boo_DirExist(LogFilePath);
             if (!DirIsExist)
             {
                 FileUtils.DirCreate(LogFilePath);
             }
 
-            Boolean JDKPathIsExist = FileUtils.Boo_DirExit(jdkPath);
+            Boolean JDKPathIsExist = FileUtils.Boo_DirExist(jdkPath);
             StringBuilder Java = new StringBuilder("java");
             if (JDKPathIsExist)
             {

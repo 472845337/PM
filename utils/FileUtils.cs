@@ -11,12 +11,12 @@ namespace PM.utils
         {
             return "bat/" + projectTitle + ".bat";
         }
-        public static Boolean Boo_DirExit(String DirPath)
+        public static Boolean Boo_DirExist(String DirPath)
         {
             return System.IO.Directory.Exists(@DirPath);
         }
 
-        public static Boolean Boo_FileExit(String FilePath)
+        public static Boolean Boo_FileExist(String FilePath)
         {
             return System.IO.File.Exists(@FilePath);
         }
@@ -34,7 +34,7 @@ namespace PM.utils
         public static void createFile(String filePath, String content)
         {
             String directPath = Path.GetDirectoryName(filePath);
-            if (!Boo_DirExit(directPath))
+            if (!Boo_DirExist(directPath))
             {
                 DirCreate(directPath);
             }

@@ -40,6 +40,7 @@ namespace PM
             this.UpdateForm_HeartBeat_Label = new System.Windows.Forms.Label();
             this.UpdateForm_Port_TextBox = new System.Windows.Forms.TextBox();
             this.UpdateForm_Port_Label = new System.Windows.Forms.Label();
+            this.Jar_UpdateOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // UpdateForm_Jar_TextBox
@@ -102,6 +103,7 @@ namespace PM
             this.UpdateForm_Jar_Dialog_Button.TabIndex = 18;
             this.UpdateForm_Jar_Dialog_Button.Text = "...";
             this.UpdateForm_Jar_Dialog_Button.UseVisualStyleBackColor = true;
+            this.UpdateForm_Jar_Dialog_Button.Click += new System.EventHandler(this.UpdateForm_Jar_Dialog_Button_Click);
             // 
             // UpdateForm_HeartBeat_TextBox
             // 
@@ -134,6 +136,10 @@ namespace PM
             this.UpdateForm_Port_Label.Size = new System.Drawing.Size(40, 17);
             this.UpdateForm_Port_Label.TabIndex = 21;
             this.UpdateForm_Port_Label.Text = "端  口";
+            // 
+            // Jar_UpdateOpenFileDialog
+            // 
+            this.Jar_UpdateOpenFileDialog.Filter = "Jar Fies(*.jar)|*.jar|All Files(*.*)|*.*";
             // 
             // UpdateForm
             // 
@@ -173,5 +179,6 @@ namespace PM
         private System.Windows.Forms.Label UpdateForm_HeartBeat_Label;
         private System.Windows.Forms.TextBox UpdateForm_Port_TextBox;
         private System.Windows.Forms.Label UpdateForm_Port_Label;
+        private System.Windows.Forms.OpenFileDialog Jar_UpdateOpenFileDialog;
     }
 }

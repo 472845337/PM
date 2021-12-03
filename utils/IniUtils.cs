@@ -25,7 +25,7 @@ namespace PM.utils
         public long IniWriteValue(String iniPath, string Section, string Key, string Value)
         {
             // 如果文件不存在，创建文件
-            if (!FileUtils.Boo_DirExit(iniPath))
+            if (!FileUtils.Boo_DirExist(iniPath))
             {
                 FileUtils.DirCreate(Path.GetDirectoryName(iniPath));
             }

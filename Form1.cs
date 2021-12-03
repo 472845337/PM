@@ -2,6 +2,7 @@
 using PM.utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -147,8 +148,11 @@ namespace PM
             button.Font = new Font("微软雅黑", 12);
 
             button.MouseHover += new EventHandler(BtnMouseHover);
+            /** 
+             * btn没有双击事件，只能单击
+             */
+            button.MouseClick += new MouseEventHandler(BtnClick);
 
-            
             /** 右键按钮添加事件
              * 
              * */
@@ -275,16 +279,27 @@ namespace PM
             Button btn = (Button)Projects_Panel.Controls[section];
             Projects_Panel.Controls.Remove(btn);
         }
+
+        private ProjectSections.ProjectSection getCurrentProjectSectionBySender(Object sender)
+        {
+            Button currentBtn = getCurrentBtnBySender(sender);
+            String section = currentBtn.Name;
+            ProjectSections.ProjectSection currentSection = ProjectSections.getProjectBySection(section);
+            return currentSection;
+        }
+        private Button getCurrentBtnBySender(Object sender)
+        {
+            Button currentBtn = (Button)sender;
+            return currentBtn;
+        }
         // 鼠标移动到按钮事件
         ToolTip toolTip1 = new ToolTip();
         private void BtnMouseHover(Object sender, EventArgs e)
         {
-            Button currentBtn = (Button)sender;
-            String section = currentBtn.Name;
-            ProjectSections.ProjectSection monitorSection = ProjectSections.getProjectBySection(section);
-            if (null != monitorSection)
+            ProjectSections.ProjectSection currentSection = getCurrentProjectSectionBySender(sender);
+            if (null != currentSection)
             {
-                String title = monitorSection.title;
+                String title = currentSection.title;
 
                 // 设置显示样式
                 //toolTip1.AutoPopDelay = 5000;//提示信息的可见时间
@@ -292,9 +307,24 @@ namespace PM
                 toolTip1.ReshowDelay = 0;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
                 toolTip1.ShowAlways = true;//是否显示提示框
                                            //  设置伴随的对象.
-                toolTip1.SetToolTip(currentBtn, title);
+                toolTip1.SetToolTip(getCurrentBtnBySender(sender), title);
             }
         }
+
+        /** 左键双击,打开jar包路径 */
+        private void BtnClick(Object sender, EventArgs e)
+        {
+            ProjectSections.ProjectSection projectSection = getCurrentProjectSectionBySender(sender);
+            if (!FileUtils.Boo_FileExist(projectSection.jar))
+            {
+                MessageBox.Show("该jar配置的文件被删除，请重新配置");
+            }
+            else
+            {
+                Process.Start("explorer.exe", " /select," + projectSection.jar);
+            }
+        }
+
         /**
       * 右键启动
       * */

@@ -29,7 +29,7 @@ namespace PM.utils
             try
             {
                 String logFileDirectory = Path.GetDirectoryName(logFile);
-                if (!FileUtils.Boo_DirExit(logFileDirectory))
+                if (!FileUtils.Boo_DirExist(logFileDirectory))
                 {
                     // 目录不存在，创建目录
                     FileUtils.DirCreate(logFileDirectory);

@@ -124,7 +124,7 @@ namespace PM
             this.Project_GroupBox.Controls.Add(this.Projects_Panel);
             this.Project_GroupBox.Controls.Add(this.ProjectAdd_Button);
             this.Project_GroupBox.Location = new System.Drawing.Point(13, 107);
-            this.Project_GroupBox.MinimumSize = new System.Drawing.Size(0, 320);
+            this.Project_GroupBox.MinimumSize = new System.Drawing.Size(0, 150);
             this.Project_GroupBox.Name = "Project_GroupBox";
             this.Project_GroupBox.Size = new System.Drawing.Size(630, 320);
             this.Project_GroupBox.TabIndex = 1;
@@ -174,7 +174,7 @@ namespace PM
             this.Controls.Add(this.Project_GroupBox);
             this.Controls.Add(this.System_GroupBox);
             this.MaximumSize = new System.Drawing.Size(670, 1000);
-            this.MinimumSize = new System.Drawing.Size(670, 500);
+            this.MinimumSize = new System.Drawing.Size(670, 340);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Java项目管理";
