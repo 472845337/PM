@@ -39,6 +39,8 @@ namespace PM
             waitForm.mainForm = this;
             waitForm.Show();
             waitForm.Update();
+            // 添加按钮置顶
+            ProjectAdd_Button.BringToFront();
             /// GC回收定时任务初始化
             GcTimer.Interval = 20000;
             GcTimer.Enabled = true;
