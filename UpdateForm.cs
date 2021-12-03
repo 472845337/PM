@@ -1,6 +1,7 @@
 ﻿using PM.config;
 using PM.utils;
 using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -86,13 +87,18 @@ namespace PM
                 iniUtils.IniWriteValue(Config.ProjectsIniPath, section, "port", port);
                 iniUtils.IniWriteValue(Config.ProjectsIniPath, section, "heartBeat", heartBeat);
                 /* 生成新INI结束 ************************/
-                // sections缓存数据新增
+                // sections缓存数据修改
                 ProjectSections.ProjectSection monitorSection = ProjectSections.getProjectBySection(section);
                 monitorSection.title = title;
                 monitorSection.jar = jar;
                 monitorSection.port = port;
                 monitorSection.heartBeat = heartBeat;
                 ProjectSections.updateProjectSection(section, monitorSection);
+                // 生成start.bat
+                String logPath = Path.GetDirectoryName(jar) + "/" + title;
+                ProjectUtils.createStartBat(title, jar, Convert.ToInt16(port), logPath, Config.LOG_FILE_INFO, Config.LOG_FILE_ERROR);
+                // 生成stop.bat
+                ProjectUtils.createStopBat(title, port);
                 /* StartForm中更新服务按钮 *************/
                 mainForm.updateButton(section);
                 /* 更新服务按钮完成****** *************/

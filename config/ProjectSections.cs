@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PM.config
 {
-    class ProjectSections
+    public class ProjectSections
     {
         private static List<String> sections;
         private static Dictionary<String, ProjectSection> dictionarys;
@@ -75,6 +75,7 @@ namespace PM.config
         }
         public class ProjectSection
         {
+            public String section { get; set; }
             public String title { get; set; }
             public String jar { get; set; }
             public String port { get; set; }

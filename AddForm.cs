@@ -2,6 +2,7 @@
 using PM.config;
 using PM.utils;
 using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -73,7 +74,10 @@ namespace PM
                 iniUtils.IniWriteValue(Config.ProjectsIniPath, newSection, "jar", jar);
                 iniUtils.IniWriteValue(Config.ProjectsIniPath, newSection, "port", port);
                 iniUtils.IniWriteValue(Config.ProjectsIniPath, newSection, "heartBeat", heartBeat);
-                // 生成taskkill.bat
+                // 生成start.bat
+                String logPath = Path.GetDirectoryName(jar) + "/" + title;
+                ProjectUtils.createStartBat(title, jar, Convert.ToInt16(port), logPath, Config.LOG_FILE_INFO, Config.LOG_FILE_ERROR);
+                // 生成stop.bat
                 ProjectUtils.createStopBat(title, port);
                 /* StartForm中添加新服务按钮 *************/
                 mainForm.addButton(newSection, title, jar, port, heartBeat);

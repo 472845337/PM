@@ -92,7 +92,9 @@ namespace PM
             Thread.Sleep(200);
 
             Profile_ComboBox.Text = profile;
+            ProjectUtils.profile = profile;
             JDKPath_TextBox.Text = JDKPath;
+            ProjectUtils.jdkPath = JDKPath;
 
             // 主窗体赋值，以便其它地方调用
             Config.mainForm = this;
@@ -113,9 +115,9 @@ namespace PM
                 // 监控地址
                 String heartBeat = iniUtils.IniReadValue(Config.ProjectsIniPath, section, "heartBeat");
                 // 创建按钮
-                addButton(section, buttonText, jar, port, heartBeat);
+                ProjectSections.ProjectSection projectSection = addButton(section, buttonText, jar, port, heartBeat);
                 // 校验section
-                checkSection(section, buttonText, port);
+                CheckSection(projectSection);
                 waitForm.freshProgress(progress + (surplusProgress / sectionList.Count) * (i + 1));
                 Thread.Sleep(200);
             }
@@ -132,7 +134,7 @@ namespace PM
         /// <param name="jar">jar包路径</param>
         /// <param name="port">启动端口</param>
         /// <param name="heartBeat">心跳检测地址</param>
-        public void addButton(String buttonName, String buttonText, String jar, String port, String heartBeat)
+        public ProjectSections.ProjectSection addButton(String buttonName, String buttonText, String jar, String port, String heartBeat)
         {
             Button button = new Button();
             button.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -198,25 +200,33 @@ namespace PM
             * 数据写进缓存
             * */
             ProjectSections.ProjectSection projectSection = new ProjectSections.ProjectSection();
+            projectSection.section = buttonName;
             projectSection.title = buttonText;
             projectSection.jar = jar;
             projectSection.port = port;
             projectSection.heartBeat = heartBeat;
             ProjectSections.updateProjectSection(buttonName, projectSection);
+            return projectSection;
         }
 
-        public void checkSection(String section, String projectTitle, String port)
+        private void CheckSection(ProjectSections.ProjectSection projectSection)
         {
             // 校验端口结束进程的bat文件是否存在，不存在
-            if (!File.Exists(FileUtils.getBatFilePath(projectTitle)))
+            if (!File.Exists(FileUtils.getBatFilePath(projectSection.title, Config.BAT_FILE_TYPE_START)))
             {
-                ProjectUtils.createStopBat(projectTitle, port);
+                String logPath = Path.GetDirectoryName(projectSection.jar) + "/" + projectSection.title;
+                ProjectUtils.createStartBat(projectSection.title, projectSection.jar, Convert.ToInt16(projectSection.port), logPath, "info.log", "error.log");
+            }
+            // 校验端口结束进程的bat文件是否存在，不存在
+            if (!File.Exists(FileUtils.getBatFilePath(projectSection.title, Config.BAT_FILE_TYPE_STOP)))
+            {
+                ProjectUtils.createStopBat(projectSection.title, projectSection.port);
             }
             // 识别运行状态
-            ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
+
             if (null != projectSection)
             {
-                if (PortUtils.PortInUse(Convert.ToInt16(port)))
+                if (PortUtils.PortInUse(Convert.ToInt16(projectSection.port)))
                 {
                     projectSection.isRunning = true;
                 }
@@ -225,7 +235,7 @@ namespace PM
                     projectSection.isRunning = false;
                 }
                 // 根据运行状态右键按钮的可操作性调整
-                updateButtonEnabledOfMenuStrip(section, projectSection.isRunning);
+                updateButtonEnabledOfMenuStrip(projectSection.section, projectSection.isRunning);
             }
         }
 
@@ -339,10 +349,7 @@ namespace PM
             ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
             if (null != projectSection)
             {
-                String jdkPath = JDKPath_TextBox.Text;
-                String profile = Profile_ComboBox.SelectedItem.ToString();
-                String logPath = Path.GetDirectoryName(projectSection.jar) + "/"+ projectSection.title;
-                ProjectUtils.projectStart(jdkPath, projectSection.jar, profile, int.Parse(projectSection.port), logPath, "info.log", "error.log");
+                ProjectUtils.projectStart(projectSection.title);
             }
         }
         /**
@@ -357,7 +364,7 @@ namespace PM
             if (null != projectSection)
             {
                 // 停止
-                ProjectUtils.projectStop(projectSection.title, Convert.ToInt16(projectSection.port));
+                ProjectUtils.projectStop(projectSection.title);
             }
         }
 
@@ -399,6 +406,13 @@ namespace PM
         /// <param name="e"></param>
         private void ProjectAdd_Button_Click(object sender, EventArgs e)
         {
+            String profile = ProjectUtils.profile;
+            String jdkPath = ProjectUtils.jdkPath;
+            if(profile == null || "".Equals(profile) || null == jdkPath || "".Equals(jdkPath))
+            {
+                MessageBox.Show("运行环境和JDK路径需配置并保存！");
+                return;
+            }
             AddForm addForm = new AddForm();
             // 先要把主窗口放以弹出窗口中，以便弹出窗口调用主窗口函数
             addForm.mainForm = this;
@@ -431,7 +445,20 @@ namespace PM
             String JDKPath = JDKPath_TextBox.Text;
             long saveProfileResult = iniUtils.IniWriteValue(Config.SystemIniPath, "system", "profile", profile);
             long saveJDKPathresult = iniUtils.IniWriteValue(Config.SystemIniPath, "system", "JDKPath", JDKPath);
-            if(saveProfileResult>0 && saveJDKPathresult > 0)
+
+            ProjectUtils.profile = profile;
+            ProjectUtils.jdkPath = JDKPath;
+            // 刷新bat文件
+            // 动态创建按钮控件
+            List<String> sectionList = iniUtils.ReadSections(Config.ProjectsIniPath);
+            for (int i = 0; i < sectionList.Count; i++)
+            {
+                String section = sectionList[i];
+                ProjectSections.ProjectSection projectSection = ProjectSections.getProjectBySection(section);
+                // 校验section
+                CheckSection(projectSection);
+            }
+            if (saveProfileResult>0 && saveJDKPathresult > 0)
             {
                 MessageBox.Show("保存成功！");
             }

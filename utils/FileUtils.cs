@@ -1,15 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PM.config;
+using System;
 using System.IO;
-using System.Text;
 
 namespace PM.utils
 {
     class FileUtils
     {
-        public static String getBatFilePath(String projectTitle)
+        public static String getBatFilePath(String projectTitle, String type)
         {
-            return "bat/" + projectTitle + ".bat";
+            String batTypePath;
+            if (Config.BAT_FILE_TYPE_START.Equals(type))
+            {
+                batTypePath = Config.BAT_FILE_NAME_START;
+            }
+            else if(Config.BAT_FILE_TYPE_STOP.Equals(type))
+            {
+                batTypePath = Config.BAT_FILE_NAME_STOP;
+            }
+            else
+            {
+                batTypePath = "";
+            }
+            return Config.BatPath + projectTitle + batTypePath;
         }
         public static Boolean Boo_DirExist(String DirPath)
         {
